@@ -26,7 +26,7 @@ var Status string
 func main() {
 
 	Status = "yellow"
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/ws/", func(w http.ResponseWriter, r *http.Request) {
 
 		ws, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {

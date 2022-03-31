@@ -67,9 +67,9 @@ type ClientMessage struct {
 }
 
 type DeviceState struct {
-	Lamp1 bool    `json:"lamp1"`
-	Lamp2 bool    `json:"lamp2"`
-	Temp  float32 `json:"temp"`
+	Lamp1 bool   `json:"lamp1"`
+	Lamp2 bool   `json:"lamp2"`
+	Temp  string `json:"temp"`
 }
 
 var Device *DeviceState
@@ -92,9 +92,12 @@ func (c *Client) readMsg() {
 			} else if message.Value == "lamp2" {
 				Device.Lamp2 = !Device.Lamp2
 			}
-			for _, cl := range Clients {
-				cl.writeMsg()
-			}
+		} else if message.Action == "temp" {
+			Device.Temp = message.Value
+		}
+
+		for _, cl := range Clients {
+			cl.writeMsg()
 		}
 
 	}

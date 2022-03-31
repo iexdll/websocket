@@ -46,7 +46,11 @@ func main() {
 }
 
 func (c *Client) writeMsg(msg string) {
-	w, _ := c.ws.NextWriter(websocket.TextMessage)
+	w, err := c.ws.NextWriter(websocket.TextMessage)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 	w.Write([]byte(msg))
 	w.Close()
 }

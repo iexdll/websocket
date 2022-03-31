@@ -42,7 +42,7 @@ func main() {
 	})
 
 	log.Println("Запуск сервера")
-	http.ListenAndServe(":8081", nil)
+	http.ListenAndServe(":8654", nil)
 }
 
 func (c *Client) writeMsg(msg string) {

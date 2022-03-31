@@ -14,30 +14,61 @@
             if (event.wasClean) {
                 console.log('Соединение закрыто чисто');
             } else {
-                console.log('Обрыв соединения'); // например, "убит" процесс сервера
+                console.log('Обрыв соединения');
             }
             console.log('Код: ' + event.code + ' причина: ' + event.reason);
         };
 
         socket.onmessage = function(event) {
             console.log("Получены данные " + event.data);
-            let elem = document.getElementById('elem');
-            elem.style.background = event.data;
+            const data = JSON.parse(event.data)
+
+            const lamp1 = document.getElementById('lamp1')
+            lamp1.style.background = data.lamp1 ? 'red' : 'green'
+            lamp1.querySelector('p').textContent = data.lamp1 ? 'Включить' : 'Выключить'
+
+            const lamp2 = document.getElementById('lamp2')
+            lamp2.style.background = data.lamp2 ? 'red' : 'green'
+            lamp2.querySelector('p').textContent = data.lamp2 ? 'Включить' : 'Выключить'
+
+            const temp = document.getElementById('temp')
+            temp.querySelector('b').textContent = data.temp
+
         };
 
         socket.onerror = function(error) {
             console.log("Ошибка " + error.message);
         };
 
-
+        window.onload = function() {
+            document.getElementById('lamp1')
+                .addEventListener('click', function() {
+                    const data = {action: "click", value: "lamp1"}
+                    socket.send(JSON.stringify(data))
+                })
+            document.getElementById('lamp2')
+                .addEventListener('click', function() {
+                    const data = {action: "click", value: "lamp2"}
+                    socket.send(JSON.stringify(data))
+                })
+        }
 
     </script>
 
 </head>
 <body>
     <div style="width: 100%;height: 100%;position: fixed;top: 0;left: 0;display: flex;align-items: center;align-content: center;justify-content: center;overflow: auto;flex-direction: column;">
-        <div id="elem" style="width: 100px;height: 100px;background-color: red;margin: 20px;"></div>
-        <button onclick="socket.send('click')">Сменить цвет</button>
+        <div style="display: flex;">
+            <div id="lamp1" style="width: 100px;height: 100px;background-color: red;margin: 20px;display: flex;align-items: center;justify-content: center;color: white;cursor: pointer;">
+                <p>Включить</p>
+            </div>
+            <div id="lamp2" style="width: 100px;height: 100px;background-color: red;margin: 20px;display: flex;align-items: center;justify-content: center;color: white;cursor: pointer;">
+                <p>Включить</p>
+            </div>
+        </div>
+        <div id="temp">
+            Температура: <b>0</b>
+        </div>
     </div>
 </body>
 </html>

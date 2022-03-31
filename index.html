@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Веб сокет</title>
+    <script type="text/javascript">
+        
+        var socket = new WebSocket("ws://localhost:8081/ws");
+        
+        socket.onopen = function() {
+            console.log("Соединение установлено.");
+        };
+
+        socket.onclose = function(event) {
+            if (event.wasClean) {
+                console.log('Соединение закрыто чисто');
+            } else {
+                console.log('Обрыв соединения'); // например, "убит" процесс сервера
+            }
+            console.log('Код: ' + event.code + ' причина: ' + event.reason);
+        };
+
+        socket.onmessage = function(event) {
+            console.log("Получены данные " + event.data);
+            let elem = document.getElementById('elem');
+            elem.style.background = event.data;
+        };
+
+        socket.onerror = function(error) {
+            console.log("Ошибка " + error.message);
+        };
+
+
+
+    </script>
+
+</head>
+<body>
+    <div style="width: 100%;height: 100%;position: fixed;top: 0;left: 0;display: flex;align-items: center;align-content: center;justify-content: center;overflow: auto;flex-direction: column;">
+        <div id="elem" style="width: 100px;height: 100px;background-color: red;margin: 20px;"></div>
+        <button onclick="socket.send('click')">Сменить цвет</button>
+    </div>
+</body>
+</html>

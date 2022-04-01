@@ -23,6 +23,28 @@ type Client struct {
 
 var Clients []*Client
 
+type TypeOut int32
+
+const (
+	OFF                 = 0
+	ON          TypeOut = 1
+	REQUEST_OFF TypeOut = 2
+	REQUEST_ON  TypeOut = 3
+)
+
+type ClientMessage struct {
+	Action string `json:"action"`
+	Value  string `json:"value"`
+}
+
+type DeviceState struct {
+	Lamp1 bool   `json:"lamp1"`
+	Lamp2 bool   `json:"lamp2"`
+	Temp  string `json:"temp"`
+}
+
+var Device *DeviceState
+
 func main() {
 
 	Device = &DeviceState{}
@@ -60,19 +82,6 @@ func (c *Client) writeMsg() {
 	w.Close()
 
 }
-
-type ClientMessage struct {
-	Action string `json:"action"`
-	Value  string `json:"value"`
-}
-
-type DeviceState struct {
-	Lamp1 bool   `json:"lamp1"`
-	Lamp2 bool   `json:"lamp2"`
-	Temp  string `json:"temp"`
-}
-
-var Device *DeviceState
 
 func (c *Client) readMsg() {
 	for {

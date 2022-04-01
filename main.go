@@ -10,6 +10,7 @@ import (
 )
 
 //https://udf.su/ws-1006-error-handling
+//https://stackoverflow.com/questions/37696527/go-gorilla-websockets-on-ping-pong-fail-user-disconnct-call-function
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,

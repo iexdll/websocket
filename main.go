@@ -9,6 +9,8 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+//https://udf.su/ws-1006-error-handling
+
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,

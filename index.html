@@ -31,13 +31,8 @@
             lamp1 = data.lamp1
             lamp2 = data.lamp2
 
-            const lamp1El = document.getElementById('lamp1')
-            lamp1El.style.background = lamp1 ? 'green' : 'red'
-            lamp1El.querySelector('p').textContent = lamp1 ? 'Выключить' : 'Включить'
-
-            const lamp2El = document.getElementById('lamp2')
-            lamp2El.style.background = lamp2 ? 'green' : 'red'
-            lamp2El.querySelector('p').textContent = lamp2 ? 'Выключить' : 'Включить'
+            document.getElementById('lamp1').src = "./light_" + (lamp1 ? "on" : "off" ) + ".png"
+            document.getElementById('lamp2').src = "./light_" + (lamp2 ? "on" : "off" ) + ".png"
 
             const temp = document.getElementById('temp')
             temp.querySelector('b').textContent = data.temp
@@ -67,15 +62,11 @@
 <body>
     <div style="width: 100%;height: 100%;position: fixed;top: 0;left: 0;display: flex;align-items: center;align-content: center;justify-content: center;overflow: auto;flex-direction: column;">
         <div style="display: flex;">
-            <div id="lamp1" style="width: 100px;height: 100px;background-color: red;margin: 20px;display: flex;align-items: center;justify-content: center;color: white;cursor: pointer;">
-                <p>Включить</p>
-            </div>
-            <div id="lamp2" style="width: 100px;height: 100px;background-color: red;margin: 20px;display: flex;align-items: center;justify-content: center;color: white;cursor: pointer;">
-                <p>Включить</p>
-            </div>
+            <img id="lamp1" src="./light_off.png" alt="" style="width: 50%;height: 100%;cursor: pointer;">
+            <img id="lamp2" src="./light_off.png" alt="" style="width: 50%;height: 100%;cursor: pointer;">
         </div>
-        <div id="temp">
-            Температура: <b>0</b>
+        <div id="temp" style="padding-top: 30px;display: flex;justify-content: center;align-items: center;">
+            <img src="./temperature.png" alt="" style="width: 50px;height: 50px;"> <b>0</b> &#176;C
         </div>
     </div>
 </body>

@@ -41,7 +41,7 @@ func (c *Connection) read(isDevice bool) {
 			return
 		}
 
-		message, err := ioutil.ReadAll(r)
+		buf, err := ioutil.ReadAll(r)
 		if err != nil {
 			log.Println(5, err)
 			return
@@ -49,11 +49,11 @@ func (c *Connection) read(isDevice bool) {
 
 		if isDevice {
 			for _, item := range CPanels {
-				item.Conn.write(message)
+				item.Conn.write(buf)
 			}
 		} else {
 			for _, item := range Devices {
-				item.Conn.write(message)
+				item.Conn.write(buf)
 			}
 		}
 

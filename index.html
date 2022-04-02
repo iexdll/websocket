@@ -8,7 +8,7 @@
         let lamp1 = false
         let lamp2 = false
 
-        const socket = new WebSocket("ws://localhost:8654/ws/");
+        const socket = new WebSocket("ws://webard.smrv.ru:8654/ws/");
         
         socket.onopen = function() {
             console.log("Соединение установлено.");
@@ -37,6 +37,10 @@
             const temp = document.getElementById('temp')
             temp.querySelector('b').textContent = data.temp
 
+            const connection = document.getElementById('connection')
+            connection.querySelector('img').src = "./connection_" + (data.temp !== "" ? "on" : "off" ) + ".png"
+            connection.querySelector('p').textContent = data.temp !== "" ? "Устройство подключено" : "Устройство не подключено"
+
         };
 
         socket.onerror = function(error) {
@@ -61,6 +65,10 @@
 </head>
 <body>
     <div style="width: 100%;height: 100%;position: fixed;top: 0;left: 0;display: flex;align-items: center;align-content: center;justify-content: center;overflow: auto;flex-direction: column;">
+        <div id="connection" style="display: flex;justify-content: center;align-items: center;">
+            <img src="./connection_off.png" alt="" style="width: 10%;height: 100%;">
+            <p>Устройство не подключено</p>
+        </div>
         <div style="display: flex;">
             <img id="lamp1" src="./light_off.png" alt="" style="width: 50%;height: 100%;cursor: pointer;">
             <img id="lamp2" src="./light_off.png" alt="" style="width: 50%;height: 100%;cursor: pointer;">

@@ -24,16 +24,20 @@
             console.log("Получены данные " + event.data);
             const data = JSON.parse(event.data)
 
-            const lamp1 = document.getElementById('lamp1')
-            lamp1.style.background = data.lamp1 ? 'red' : 'green'
-            lamp1.querySelector('p').textContent = data.lamp1 ? 'Включить' : 'Выключить'
+            if (data.device) {
 
-            const lamp2 = document.getElementById('lamp2')
-            lamp2.style.background = data.lamp2 ? 'red' : 'green'
-            lamp2.querySelector('p').textContent = data.lamp2 ? 'Включить' : 'Выключить'
+                const lamp1 = document.getElementById('lamp1')
+                lamp1.style.background = data.lamp1 ? 'red' : 'green'
+                lamp1.querySelector('p').textContent = data.lamp1 ? 'Включить' : 'Выключить'
 
-            const temp = document.getElementById('temp')
-            temp.querySelector('b').textContent = data.temp
+                const lamp2 = document.getElementById('lamp2')
+                lamp2.style.background = data.lamp2 ? 'red' : 'green'
+                lamp2.querySelector('p').textContent = data.lamp2 ? 'Включить' : 'Выключить'
+
+                const temp = document.getElementById('temp')
+                temp.querySelector('b').textContent = data.temp
+
+            }
 
         };
 

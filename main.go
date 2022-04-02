@@ -41,9 +41,10 @@ type ClientMessage struct {
 }
 
 type DeviceState struct {
-	Lamp1 bool   `json:"lamp1"`
-	Lamp2 bool   `json:"lamp2"`
-	Temp  string `json:"temp"`
+	Lamp1  bool   `json:"lamp1"`
+	Lamp2  bool   `json:"lamp2"`
+	Temp   string `json:"temp"`
+	Device bool   `json:"device"`
 }
 
 var Device *DeviceState
@@ -98,12 +99,14 @@ func (c *Client) readMsg() {
 		b, err := ioutil.ReadAll(r)
 		_ = json.Unmarshal(b, &message)
 
+		Device.Device = true
 		if message.Action == "click" {
 			if message.Value == "lamp1" {
 				Device.Lamp1 = !Device.Lamp1
 			} else if message.Value == "lamp2" {
 				Device.Lamp2 = !Device.Lamp2
 			}
+			Device.Device = false
 		} else if message.Action == "temp" {
 			Device.Temp = message.Value
 		}

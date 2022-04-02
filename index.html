@@ -8,7 +8,7 @@
         let lamp1 = false
         let lamp2 = false
 
-        const socket = new WebSocket("ws://webard.smrv.ru:8654/ws/");
+        const socket = new WebSocket("ws://" + location.host + ":8654/ws/");
         
         socket.onopen = function() {
             console.log("Соединение установлено.");

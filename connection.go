@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/gorilla/websocket"
 	"io/ioutil"
 	"log"
@@ -48,6 +49,13 @@ func (c *Connection) read(isDevice bool) {
 		}
 
 		if isDevice {
+			if len(Devices) > 0 {
+				d := &Device{}
+				_ = json.Unmarshal(buf, d)
+				Devices[0].Lamp1 = d.Lamp1
+				Devices[0].Lamp2 = d.Lamp2
+				Devices[0].Temp = d.Temp
+			}
 			for _, item := range CPanels {
 				item.Conn.write(buf)
 			}

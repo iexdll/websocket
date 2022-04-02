@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -35,6 +36,14 @@ func main() {
 			log.Println("Новая панель управления")
 			cp := &CPanel{Conn: &Connection{conn: conn}}
 			go cp.Conn.read(false)
+			if len(Devices) > 0 {
+				buf, err := json.Marshal(Devices[0])
+				if err != nil {
+					log.Fatal(err)
+				}
+				cp.Conn.write(buf)
+			}
+
 			CPanels = append(CPanels, cp)
 		} else {
 			log.Println("Устройство подключено")

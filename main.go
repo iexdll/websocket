@@ -1,12 +1,9 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
+	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
-
-	"github.com/gorilla/websocket"
 )
 
 //https://udf.su/ws-1006-error-handling
@@ -20,100 +17,34 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-type Client struct {
-	ws *websocket.Conn
-}
-
-var Clients []*Client
-
-type TypeOut int32
-
-const (
-	OFF                 = 0
-	ON          TypeOut = 1
-	REQUEST_OFF TypeOut = 2
-	REQUEST_ON  TypeOut = 3
-)
-
-type ClientMessage struct {
-	Action string `json:"action"`
-	Value  string `json:"value"`
-}
-
-type DeviceState struct {
-	Lamp1  bool   `json:"lamp1"`
-	Lamp2  bool   `json:"lamp2"`
-	Temp   string `json:"temp"`
-	Device bool   `json:"device"`
-}
-
-var Device *DeviceState
+var Devices []*Device
+var CPanels []*CPanel
 
 func main() {
 
-	Device = &DeviceState{}
-
 	http.HandleFunc("/ws/", func(w http.ResponseWriter, r *http.Request) {
 
-		ws, err := upgrader.Upgrade(w, r, nil)
+		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		log.Println("Новый клиент")
-		c := &Client{ws: ws}
-		go c.readMsg()
-		c.writeMsg()
+		deviceID := r.URL.Query().Get("device")
 
-		Clients = append(Clients, c)
+		if "" == deviceID {
+			log.Println("Новая панель управления")
+			cp := &CPanel{Conn: &Connection{conn: conn}}
+			go cp.Conn.read(false)
+			CPanels = append(CPanels, cp)
+		} else {
+			log.Println("Устройство подключено")
+			device := &Device{Conn: &Connection{conn: conn}}
+			go device.Conn.read(true)
+			Devices = append(Devices, device)
+		}
+
 	})
 
 	log.Println("Запуск сервера")
 	http.ListenAndServe(":8654", nil)
-}
-
-func (c *Client) writeMsg() {
-
-	w, err := c.ws.NextWriter(websocket.TextMessage)
-	if err != nil {
-		log.Println(1, err)
-		return
-	}
-
-	deviceJson, err := json.Marshal(Device)
-
-	w.Write(deviceJson)
-	w.Close()
-
-}
-
-func (c *Client) readMsg() {
-	for {
-		_, r, err := c.ws.NextReader()
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		message := &ClientMessage{}
-		b, err := ioutil.ReadAll(r)
-		_ = json.Unmarshal(b, &message)
-
-		Device.Device = true
-		if message.Action == "click" {
-			if message.Value == "lamp1" {
-				Device.Lamp1 = !Device.Lamp1
-			} else if message.Value == "lamp2" {
-				Device.Lamp2 = !Device.Lamp2
-			}
-			Device.Device = false
-		} else if message.Action == "temp" {
-			Device.Temp = message.Value
-		}
-
-		for _, cl := range Clients {
-			cl.writeMsg()
-		}
-
-	}
 }

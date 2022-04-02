@@ -4,8 +4,11 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title>Веб сокет</title>
     <script type="text/javascript">
-        
-        var socket = new WebSocket("ws://localhost:8654/ws/");
+
+        let lamp1 = false
+        let lamp2 = false
+
+        const socket = new WebSocket("ws://localhost:8654/ws/");
         
         socket.onopen = function() {
             console.log("Соединение установлено.");
@@ -21,23 +24,23 @@
         };
 
         socket.onmessage = function(event) {
+
             console.log("Получены данные " + event.data);
             const data = JSON.parse(event.data)
 
-            if (data.device) {
+            lamp1 = data.lamp1
+            lamp2 = data.lamp2
 
-                const lamp1 = document.getElementById('lamp1')
-                lamp1.style.background = data.lamp1 ? 'red' : 'green'
-                lamp1.querySelector('p').textContent = data.lamp1 ? 'Включить' : 'Выключить'
+            const lamp1El = document.getElementById('lamp1')
+            lamp1El.style.background = lamp1 ? 'green' : 'red'
+            lamp1El.querySelector('p').textContent = lamp1 ? 'Выключить' : 'Включить'
 
-                const lamp2 = document.getElementById('lamp2')
-                lamp2.style.background = data.lamp2 ? 'red' : 'green'
-                lamp2.querySelector('p').textContent = data.lamp2 ? 'Включить' : 'Выключить'
+            const lamp2El = document.getElementById('lamp2')
+            lamp2El.style.background = lamp2 ? 'green' : 'red'
+            lamp2El.querySelector('p').textContent = lamp2 ? 'Выключить' : 'Включить'
 
-                const temp = document.getElementById('temp')
-                temp.querySelector('b').textContent = data.temp
-
-            }
+            const temp = document.getElementById('temp')
+            temp.querySelector('b').textContent = data.temp
 
         };
 
@@ -48,12 +51,12 @@
         window.onload = function() {
             document.getElementById('lamp1')
                 .addEventListener('click', function() {
-                    const data = {action: "click", value: "lamp1"}
+                    const data = {name: "lamp1", value: !lamp1}
                     socket.send(JSON.stringify(data))
                 })
             document.getElementById('lamp2')
                 .addEventListener('click', function() {
-                    const data = {action: "click", value: "lamp2"}
+                    const data = {name: "lamp2", value: !lamp2}
                     socket.send(JSON.stringify(data))
                 })
         }
